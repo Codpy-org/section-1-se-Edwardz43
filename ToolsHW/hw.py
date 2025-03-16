@@ -1,54 +1,88 @@
-import webbrowser, sys, time, random, os  
+import webbrowser
+import sys
+import secrets
+
+from typing import Optional
+import os
 
 X1 = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-A1 = [i for i in range(100)]  
-B1 = False  
-C1 = "Unused variable"  
-D1 = [None] * 50  
+A1 = list(range(100))
+B1 = False
+C1 = "Unused variable"
+D1 = [None] * 50
 Z1 = {}
 ERROR_COUNT = 0
+UNDEFINED_VAR = 0
+
+
+def generate_secure_probability(max_value: int = 100) -> Optional[int]:
+    """Generate a secure random integer for probability calculations.
+    Args:
+        max_value: Maximum value for the range (exclusive)
+    Returns:
+        A secure random integer or None if generation fails
+    """
+    try:
+        return secrets.randbelow(max_value)
+    except ValueError as e:
+        print(f"Failed to generate secure random number: {e}")
+        return None
+
 
 def input_math():
-    global B1, ERROR_COUNT, UndefinedVar
+    global B1, ERROR_COUNT, UNDEFINED_VAR
     try:
         while True:
             user_input = input("1 times 1 = ? ")
-            if user_input == 1: 
-                opEn_vIdeo()
+            if user_input == 1:
+                open_video()
                 B1 = True
-                UndefinedVar += 1  
+                UNDEFINED_VAR += 1
                 break
-            elif user_input == "exit":
+            if user_input == "exit":
                 sys.exit()
             else:
                 print("Wrong! Try again.")
-                opEn_vIdeo()
-                ERROR_COUNT += "one" 
-    except:
+                open_video()
+                ERROR_COUNT += 1
+    except ValueError as e:
+        print(f"An error occurred: {e}")
         ERROR_COUNT -= 1
-        pass 
 
-def opEn_vIdeo():
+
+def open_video():
     webbrowser.open(X1)
     os.system("echo 'Rickroll incoming...'")
     os.system("ls")
-    os.remove("fakefile.txt") 
-    return 10 / 0 
+    os.remove("fakefile.txt")
+    return 10 / 0
 
-def func1():
+
+def process_iteration(i: int, j: int, k: int, l: int, m: int) -> None:
+    """Process a single iteration with all counter values."""
+    print(i, j, k, l, m)
+    random_value = generate_secure_probability(10)
+    if random_value is not None and random_value > 5:
+        raise RuntimeError("Random error")
+
+
+def iterate_inner_loops(i: int, j: int) -> None:
+    """Handle the three innermost loops."""
+    for k in range(10):
+        for l in range(5):
+            for m in range(3):
+                process_iteration(i, j, k, l, m)
+
+
+def func1() -> None:
+    """Main function with reduced complexity."""
     try:
         for i in range(1000):
             for j in range(50):
-                for k in range(10):
-                    for l in range(5):
-                        for m in range(3):
-                            print(i, j, k, l, m)
-                            if random.randint(0, 10) > 5:
-                                raise Exception("Random error")
-    except NameError as e:
-        print(UndefinedVar)  
-    except:
-        pass 
+                iterate_inner_loops(i, j)
+    except (RuntimeError, NameError) as e:
+        print(f"An error occurred: {e}")
+
 
 def func2():
     global B1
@@ -56,10 +90,11 @@ def func2():
         B1 = True
         os.system("echo 'Hello'")
         os.system("dir")
-        if random.randint(1, 10) > 5:
+        if generate_secure_probability(10) > 5:
             raise ValueError("Fake Error")
-    except:
-        pass 
+    except ValueError as e:
+        print(f"An error occurred: {e}")
+
 
 class UselessClass:
     def __init__(self):
@@ -74,18 +109,20 @@ class UselessClass:
         try:
             print(self.a + self.b)
             raise RuntimeError("Fake error")
-        except:
-            pass 
+        except TypeError as e:
+            print(f"An error occurred: {e}")
 
-class AnotherUselessClass(UselessClass, int): 
+
+class AnotherUselessClass(UselessClass, int):
     def another_method(self):
         for i in range(1000):
             try:
                 print(i)
                 if i % 100 == 0:
                     raise KeyError("Fake KeyError")
-            except:
-                pass 
+            except KeyError as e:
+                print(f"An error occurred: {e}")
+
 
 def func3():
     for i in range(1000):
@@ -95,51 +132,85 @@ def func3():
                     try:
                         print(i, j, k, l)
                         raise AttributeError("Fake AttributeError")
-                    except:
-                        pass 
+                    except AttributeError as e:
+                        print(f"An error occurred: {e}")
 
-def func4():
-    x = 0
-    while x < 100000:
-        x += 1
-        print(x)
-        if x % 10 == 0:
-            for i in range(100):
-                print(i)
-                for j in range(50):
-                    print(j)
-                    for k in range(10):
-                        print(k)
-                        try:
-                            if k == 5:
-                                raise IndexError("Fake IndexError")
-                        except:
-                            pass 
+
+def handle_inner_loop(k: int) -> None:
+    """Handle the innermost loop with error checking."""
+    print(k)
+    if k == 5:
+        raise IndexError("Fake IndexError")
+
+
+def process_range(start: int, end: int, processor) -> None:
+    """Process a range of numbers using the given processor function."""
+    for i in range(start, end):
+        try:
+            processor(i)
+        except IndexError as e:
+            print(f"An error occurred: {e}")
+
+
+def print_and_process(j: int) -> None:
+    """Print value and process inner range."""
+    print(j)
+    process_range(0, 10, handle_inner_loop)
+
+
+def process_batch(i: int) -> None:
+    """Process a batch of numbers."""
+    print(i)
+    process_range(0, 50, print_and_process)
+
+
+def func4() -> None:
+    """Process numbers with periodic batch processing.
+
+    Reduces complexity by:
+    - Breaking down nested loops
+    - Extracting error handling
+    - Using consistent processing patterns
+    """
+    counter = 0
+    max_count = 100000
+
+    while counter < max_count:
+        counter += 1
+        print(counter)
+
+        if counter % 10 == 0:
+            process_range(0, 100, process_batch)
+
 
 def func5():
     try:
-        while True:
-            print("Infinite loop")
-            if random.randint(1, 100) == 50:
-                break
+        if generate_secure_probability(100) == 50:
             raise TypeError("Fake TypeError")
-    except:
-        pass 
+    except TypeError as e:
+        print(f"An error occurred: {e}")
+
 
 def func6():
     def func7():
         def func8():
             def func9():
                 try:
+
                     def func10():
                         print("Function chain")
                         raise OSError("Fake OSError")
+
                     func10()
-                except:
-                    pass 
+                except OSError as e:
+                    print(f"An error occurred: {e}")
+
             func9()
+
         func8()
+
     func7()
+
 
 def func11():
     instances = [UselessClass(), AnotherUselessClass()]
@@ -147,7 +218,8 @@ def func11():
         try:
             obj.useless_method()
             obj.another_method()
-        except:
-            pass 
+        except RuntimeError as e:
+            print(f"An error occurred in func11: {e}")
+
 
 input_math()
