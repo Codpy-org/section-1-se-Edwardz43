@@ -26,4 +26,4 @@ def test_solution(solution, s, p, expected):
 
 @pytest.mark.xfail
 def test_broken_solution(solution):
-    assert not solution.isMatch("a", "b")
+    assert not solution.isMatch("a", ".*.")
