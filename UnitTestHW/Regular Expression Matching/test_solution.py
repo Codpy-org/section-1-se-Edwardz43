@@ -24,6 +24,6 @@ def test_solution(solution, s, p, expected):
     assert solution.isMatch(s, p) == expected
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="Known issue with '.*.' pattern")
 def test_broken_solution(solution):
-    assert not solution.isMatch("a", ".*.")
+    assert solution.isMatch("a", ".*.")
