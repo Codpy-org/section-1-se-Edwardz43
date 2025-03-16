@@ -6,15 +6,13 @@ NUM_POINTS = 1000000
 AREA_FACTOR = 4
 SQUARE_EXPONENT = 2
 POINT_COUNT_INCREMENT = 1
-Y_MIN = -1
-Y_MAX = 1
 
 points_inside_circle = 0
 
 # Randomly generate points and count those inside the circle
 for _ in range(NUM_POINTS):
     x = random.uniform(-RADIUS, RADIUS)
-    y = random.uniform(Y_MIN, Y_MAX)
+    y = random.uniform(-RADIUS, RADIUS)  # 修改這一行
     if x**SQUARE_EXPONENT + y**SQUARE_EXPONENT <= RADIUS**SQUARE_EXPONENT:
         points_inside_circle += POINT_COUNT_INCREMENT
 
